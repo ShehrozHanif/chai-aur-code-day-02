@@ -2,8 +2,10 @@
 
 
 
+"use client";
+
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import pass2 from "../image/p2.png"
+import pass2 from "../image/p2.png";
 
 function Pg() {
   const [length, setLength] = useState(0);
@@ -21,13 +23,13 @@ function Pg() {
     if (numberAllowed) str += "0123456789";
     if (charAllowed) str += "!@#$%^&*()-_=+\\|[]{};:/?.>";
 
-    for (let i = 1; i < length; i++) {
-      const char = Math.floor(Math.random() * str.length + 1);
+    for (let i = 0; i < length; i++) { // Start from 0
+      const char = Math.floor(Math.random() * str.length); // Use only str.length
       pass += str.charAt(char);
     }
 
     setPassword(pass);
-  }, [length, numberAllowed, charAllowed, setPassword]);
+  }, [length, numberAllowed, charAllowed]);
 
   const copyPasswordToClipboard = useCallback(() => {
     passRef.current?.select();
@@ -37,9 +39,22 @@ function Pg() {
     setTimeout(() => setCopied(false), 2000);
   }, [password]);
 
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if (event.key === "Backspace") {
+      setPassword(""); // Clear the password when Backspace is pressed
+    }
+  }, []);
+
   useEffect(() => {
     passwordGenerator();
-  }, [length, numberAllowed, charAllowed, passwordGenerator]);
+  }, [length, numberAllowed, charAllowed]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown); // Add event listener for keydown
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown); // Clean up on component unmount
+    };
+  }, [handleKeyDown]);
 
   return (
     <>
@@ -47,12 +62,8 @@ function Pg() {
       style={{
         backgroundImage: `url(${pass2.src})`,
         backgroundSize: '50%',
-        // backgroundRepeat: 'no-repeat',
         backgroundPosition: "top left",
-        
-      }}
-      >
-        
+      }}>
         <div className='w-full max-w-md mx-auto shadow-lg rounded-lg p-6 my-8 text-orange-500 bg-gray-800'>
           <h1 className='text-orange-500 text-center text-3xl font-semibold mb-6'>Password Generator</h1>
           <div className='flex shadow rounded-lg overflow-hidden mb-6'>
@@ -115,5 +126,4 @@ function Pg() {
 }
 
 export default Pg;
-
 
