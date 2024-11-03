@@ -1,10 +1,7 @@
-"use client"
-
-
-
 "use client";
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
+import Image from 'next/image'; // Import Image component
 import pass2 from "../image/p2.png";
 
 function Pg() {
@@ -23,8 +20,8 @@ function Pg() {
     if (numberAllowed) str += "0123456789";
     if (charAllowed) str += "!@#$%^&*()-_=+\\|[]{};:/?.>";
 
-    for (let i = 0; i < length; i++) { // Start from 0
-      const char = Math.floor(Math.random() * str.length); // Use only str.length
+    for (let i = 0; i < length; i++) {
+      const char = Math.floor(Math.random() * str.length);
       pass += str.charAt(char);
     }
 
@@ -50,21 +47,29 @@ function Pg() {
   }, [length, numberAllowed, charAllowed]);
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown); // Add event listener for keydown
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown); // Clean up on component unmount
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [handleKeyDown]);
 
   return (
     <>
-      <div className='flex items-center justify-center min-h-screen bg-gray-700'
-      style={{
-        backgroundImage: `url(${pass2.src})`,
-        backgroundSize: '50%',
-        backgroundPosition: "top left",
-      }}>
-        <div className='w-full max-w-md mx-auto shadow-lg rounded-lg p-6 my-8 text-orange-500 bg-gray-800'>
+      <div className='relative flex items-center justify-center min-h-screen'>
+        {/* Use the Image component for the background */}
+        <Image
+          src={pass2}
+          alt="Background"
+          layout="fill" // Cover the entire parent
+          objectFit="cover" // Cover the entire area
+          quality={100} // Set quality to highest
+          className="z-0" // Set the z-index so it appears behind content
+        />
+        
+        {/* Semi-transparent overlay */}
+        <div className="absolute inset-0 bg-black opacity-40 z-10" />
+
+        <div className='relative z-20 w-full max-w-md mx-auto shadow-2xl rounded-lg p-6 my-8 bg-gray-800 bg-opacity-70'>
           <h1 className='text-orange-500 text-center text-3xl font-semibold mb-6'>Password Generator</h1>
           <div className='flex shadow rounded-lg overflow-hidden mb-6'>
             <input
@@ -98,7 +103,7 @@ function Pg() {
             </div>
 
             {/* Number Checkbox */}
-            <div className='flex items-center gap-x-2'>
+            <div className='flex items-center gap-x-2 text-orange-500'>
               <input
                 type="checkbox"
                 checked={numberAllowed}
@@ -109,7 +114,7 @@ function Pg() {
             </div>
 
             {/* Characters Checkbox */}
-            <div className='flex items-center gap-x-2'>
+            <div className='flex items-center gap-x-2 text-orange-500'>
               <input
                 type="checkbox"
                 checked={charAllowed}
@@ -126,4 +131,3 @@ function Pg() {
 }
 
 export default Pg;
-
