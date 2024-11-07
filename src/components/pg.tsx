@@ -89,7 +89,7 @@ function Pg() {
           </div>
 
           {/* Length */}
-          <div className='flex flex-col gap-y-4 text-sm'>
+          <div className='flex flex-col gap-y-4 text-sm text-orange-500'>
             <div className='flex items-center gap-x-2'>
               <input
                 type="range"
